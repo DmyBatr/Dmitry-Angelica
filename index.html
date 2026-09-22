@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-locked">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дмитрий &amp; Анжелика — 24 октября 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── ОСНОВА ─────────────────────────────────────────────────────── */
+:root{
+  --bg:#f6f1ea;
+  --ink:#3a2e29;
+  --ink-soft:#574a42;
+  --rose:#a83244;
+  --rose-deep:#872637;
+  --gold:#b7975a;
+  --line:rgba(63,51,46,.16);
+  --glass-bg:rgba(255,255,255,.84);
+  --glass-border:rgba(255,255,255,.60);
+  --glass-shadow:0 10px 44px rgba(70,45,40,.14);
+  --glass-blur:blur(20px) saturate(150%);
+  --radius:26px;
+  --serif:'Cormorant Garamond', Georgia, serif;
+  --sans:'Montserrat', -apple-system, Arial, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px}
+html,body{height:100%}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--bg);
+  font-size:1rem;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+html.is-locked, html.is-locked body{
+  overflow:hidden;
+  height:100%;
+  touch-action:none;
+}
+img{display:block;max-width:100%}
+button{font-family:inherit}
+
+/* ── ФОН: КАДР → ВИДЕО ─────────────────────────────────────────── */
+.stage{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  overflow:hidden;
+  background:#f4efe8;
+}
+.stage__poster,
+.stage__video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transition:opacity .8s ease;
+}
+.stage__poster{opacity:1}
+.stage__video{opacity:0}
+.stage.show-video .stage__poster{opacity:0}
+.stage.show-video .stage__video{opacity:1}
+/* мягкая вуаль после видео — чтобы текст читался */
+.stage::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(246,241,234,.25) 0%, rgba(246,241,234,.55) 100%);
+  opacity:0;
+  transition:opacity 1s ease;
+  pointer-events:none;
+  z-index:1;
+}
+.stage.softened::after{opacity:1}
+
+/* ── КОНВЕРТ ────────────────────────────────────────────────────── */
+.envelope{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  overflow:hidden;
+  cursor:pointer;
+  perspective:1500px;
+  perspective-origin:50% 46%;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:none;
+  transition:opacity .45s ease;
+}
+.envelope.gone{opacity:0;pointer-events:none}
+.env-flap{
+  position:absolute;
+  inset:0;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  transition:transform 1.1s cubic-bezier(.55,.06,.18,1), opacity .7s ease .35s;
+}
+.env-t{
+  clip-path:polygon(0 0, 100% 0, 50% 50%);
+  background:linear-gradient(180deg,#faf4ea,#ebdfcd);
+  transform-origin:50% 0;
+  box-shadow:inset 0 -70px 90px -55px rgba(0,0,0,.22);
+}
+.env-b{
+  clip-path:polygon(0 100%, 100% 100%, 50% 50%);
+  background:linear-gradient(0deg,#faf4ea,#ebdfcd);
+  transform-origin:50% 100%;
+  box-shadow:inset 0 70px 90px -55px rgba(0,0,0,.16);
+}
+.env-l{
+  clip-path:polygon(0 0, 0 100%, 50% 50%);
+  background:linear-gradient(90deg,#ebdfcd,#faf4ea);
+  transform-origin:0 50%;
+  box-shadow:inset -70px 0 90px -55px rgba(0,0,0,.18);
+}
+.env-r{
+  clip-path:polygon(100% 0, 100% 100%, 50% 50%);
+  background:linear-gradient(270deg,#ebdfcd,#faf4ea);
+  transform-origin:100% 50%;
+  box-shadow:inset 70px 0 90px -55px rgba(0,0,0,.18);
+}
+.env-folds{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  transition:opacity .6s;
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 1px), rgba(0,0,0,.10) 50%, transparent calc(50% + 1px)),
+    linear-gradient(to bottom left,  transparent calc(50% - 1px), rgba(0,0,0,.10) 50%, transparent calc(50% + 1px));
+}
+.env-title{
+  position:absolute;
+  left:0;right:0;
+  bottom:calc(50% + 120px);
+  z-index:4;
+  text-align:center;
+  color:var(--ink);
+  padding:0 28px;
+  transition:opacity .5s ease, transform .7s ease;
+}
+.env-t-small{
+  display:block;
+  font-family:var(--sans);
+  font-size:clamp(.78rem,3vw,1.05rem);
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  font-weight:500;
+  opacity:.6;
+  margin-bottom:16px;
+}
+.env-t-names{
+  display:block;
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:clamp(1.9rem,8vw,3.1rem);
+  line-height:1.2;
+}
+.env-invite{
+  position:absolute;
+  left:0;right:0;
+  top:calc(50% + 120px);
+  z-index:4;
+  text-align:center;
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:clamp(1.1rem,4.4vw,1.5rem);
+  letter-spacing:.1em;
+  opacity:.78;
+  transition:opacity .5s ease, transform .6s ease;
+}
+.env-seal{
+  position:absolute;
+  left:50%;top:50%;
+  z-index:5;
+  width:138px;height:138px;
+  transform:translate(-50%,-50%);
+  border-radius:48% 52% 47% 53% / 53% 47% 52% 48%;
+  background:radial-gradient(circle at 50% 40%, #bb3a4f 0%, var(--rose) 56%, var(--rose-deep) 100%);
+  box-shadow:
+    0 14px 26px -8px rgba(0,0,0,.42),
+    0 4px 9px rgba(0,0,0,.22),
+    inset 0 3px 4px rgba(255,255,255,.26),
+    inset 0 -13px 18px rgba(0,0,0,.28);
+  display:flex;align-items:center;justify-content:center;
+  animation:sealBeat 2.6s ease-in-out infinite;
+}
+.env-seal::before{
+  content:"";
+  position:absolute;
+  inset:15px;
+  border-radius:50%;
+  box-shadow:
+    inset 0 4px 8px rgba(0,0,0,.32),
+    inset 0 -4px 7px rgba(255,255,255,.16),
+    0 1px 0 rgba(255,255,255,.22),
+    0 -1px 2px rgba(0,0,0,.2);
+  border:1px solid rgba(0,0,0,.1);
+}
+.env-seal-text{
+  position:relative;z-index:1;
+  color:#5c1a26;
+  font-family:var(--sans);
+  font-size:.82rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-weight:700;
+  text-align:center;
+  line-height:1.3;
+  text-shadow:0 -1px 0 rgba(255,255,255,.28), 0 1px 2px rgba(0,0,0,.42);
+}
+@keyframes sealBeat{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%    {transform:translate(-50%,-50%) scale(1.05)}
+}
+@keyframes sealBreak{
+  0%  {transform:translate(-50%,-50%) scale(1)    rotate(0);    opacity:1}
+  28% {transform:translate(-50%,-54%) scale(1.04) rotate(0);    opacity:1}
+  100%{transform:translate(-50%,-74%) scale(.82)  rotate(-6deg);opacity:0}
+}
+.envelope.opened .env-seal{animation:sealBreak .85s cubic-bezier(.38,0,.4,1) forwards}
+.envelope.opened .env-title{opacity:0;transform:translateY(-30px);transition-delay:.1s}
+.envelope.opened .env-invite{opacity:0;transform:translateY(20px);transition-delay:.1s}
+.envelope.opened .env-folds{opacity:0}
+.envelope.opened .env-t{transform:rotateX(-122deg);opacity:0;transition-delay:.28s,.55s}
+.envelope.opened .env-l{transform:rotateY(122deg); opacity:0;transition-delay:.42s,.7s}
+.envelope.opened .env-r{transform:rotateY(-122deg);opacity:0;transition-delay:.42s,.7s}
+.envelope.opened .env-b{transform:rotateX(122deg); opacity:0;transition-delay:.56s,.85s}
+
+/* ── КНОПКА МУЗЫКИ ──────────────────────────────────────────────── */
+.music-toggle{
+  position:fixed;
+  right:18px;bottom:18px;
+  z-index:9990;
+  width:52px;height:52px;
+  border-radius:50%;
+  background:var(--rose);
+  color:#fff;
+  border:none;
+  padding:0;
+  display:none;
+  align-items:center;justify-content:center;
+  cursor:pointer;
+  font-size:20px;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+  transition:background .2s;
+}
+.music-toggle.playing{display:flex}
+.music-toggle.muted{background:#9ca3af}
+
+/* ── КОНТЕНТ ────────────────────────────────────────────────────── */
+.content{
+  position:relative;
+  z-index:1;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1.2s ease;
+}
+.content.in{opacity:1;pointer-events:auto}
+
+.glass{
+  position:relative;
+  background:var(--glass-bg);
+  backdrop-filter:var(--glass-blur);
+  -webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  box-shadow:var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.7);
+  overflow:hidden;
+}
+.glass::before{
+  content:"";
+  position:absolute;inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 34%);
+}
+
+.wrap{max-width:680px;margin:0 auto;padding:0 22px}
+.section{padding:46px 0}
+.card{padding:38px 32px}
+.center{text-align:center}
+
+.eyebrow{
+  font-size:.76rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--rose);font-weight:500;margin-bottom:12px;
+}
+.lead{color:var(--ink-soft);font-size:1.1rem;font-weight:400;line-height:1.6}
+.divider{
+  width:60px;height:1px;margin:24px auto;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  position:relative;
+}
+.divider::after{
+  content:"";position:absolute;left:50%;top:50%;
+  width:6px;height:6px;border-radius:50%;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:var(--gold);
+}
+
+/* HERO */
+.hero{
+  min-height:100svh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 22px 110px;
+}
+.hero__card{
+  width:100%;max-width:480px;
+  padding:44px 34px;
+  text-align:center;
+}
+.hero__greeting{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:1.55rem;
+  line-height:1.4;
+  color:var(--ink-soft);
+  margin-bottom:26px;
+}
+.hero__names{
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:clamp(2.6rem,11vw,4rem);
+  line-height:1.04;
+}
+.hero__amp{color:var(--rose);font-style:italic;font-weight:400}
+.hero__date{
+  margin-top:22px;
+  font-size:.92rem;
+  letter-spacing:.3em;
+  color:var(--ink-soft);
+}
+
+/* КЛЮЧЕВАЯ ИНФО + ТАЙМЕР */
+.keyinfo{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.keyinfo__item{padding:26px 14px}
+.keyinfo__item + .keyinfo__item{border-left:1px solid var(--line)}
+.keyinfo__label{
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--rose);font-weight:500;margin-bottom:10px;
+}
+.keyinfo__value{
+  font-family:var(--serif);
+  font-size:1.6rem;color:var(--ink);line-height:1.25;
+}
+.keyinfo__timer{padding:0 22px 28px}
+.timer{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  border-top:1px solid var(--line);
+  padding-top:24px;
+}
+.timer__cell{text-align:center}
+.timer__num{
+  display:block;
+  font-family:var(--serif);
+  font-size:clamp(1.9rem,7vw,2.5rem);
+  line-height:1;font-weight:600;
+  color:var(--rose);
+}
+.timer__label{
+  display:block;margin-top:8px;
+  font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+
+/* ФИНАЛ */
+.final{padding:60px 22px 90px;text-align:center}
+.final__card{max-width:480px;margin:0 auto;padding:48px 34px}
+.final__text{
+  font-family:var(--serif);font-style:italic;
+  font-size:1.45rem;color:var(--ink-soft);line-height:1.5;
+}
+.final__names{
+  margin-top:24px;
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(2.1rem,8vw,2.9rem);
+  line-height:1.1;
+}
+.final__names .amp{color:var(--rose);font-style:italic}
+.final__rose{font-size:1.6rem;color:var(--rose);margin-top:16px}
+
+/* REVEAL ON SCROLL */
+.reveal{
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in{opacity:1;transform:none}
+
+/* АДАПТИВ */
+@media (max-width:560px){
+  .wrap{padding:0 12px}
+  .card{padding:30px 18px}
+  .hero{padding-left:14px;padding-right:14px}
+  .hero__card{padding:38px 22px}
+  .final{padding-left:14px;padding-right:14px}
+  .final__card{padding:40px 22px}
+}
+@media (max-width:420px){
+  html{font-size:17px}
+  .keyinfo{grid-template-columns:1fr}
+  .keyinfo__item + .keyinfo__item{border-left:none;border-top:1px solid var(--line)}
+  .card{padding:26px 15px}
+  .hero__card{padding:34px 18px}
+  .timer{grid-template-columns:repeat(4,1fr);gap:6px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- КОНВЕРТ -->
+<div class="envelope" id="envelope" role="button" aria-label="Открыть приглашение">
+  <div class="env-flap env-t"></div>
+  <div class="env-flap env-b"></div>
+  <div class="env-flap env-l"></div>
+  <div class="env-flap env-r"></div>
+  <div class="env-folds"></div>
+
+  <div class="env-title">
+    <span class="env-t-small">Приглашение на свадьбу</span>
+    <span class="env-t-names">Дмитрий &amp; Анжелика</span>
+  </div>
+
+  <div class="env-seal">
+    <span class="env-seal-text">Нажми<br>меня</span>
+  </div>
+
+  <div class="env-invite">24 октября 2026</div>
+</div>
+
+<!-- ФОН: КАДР → ВИДЕО -->
+<div class="stage" id="stage">
+  <img class="stage__poster" id="poster" src="" alt="">
+  <video class="stage__video" id="videoBloom" muted playsinline preload="auto"></video>
+</div>
+
+<!-- КНОПКА МУЗЫКИ -->
+<button class="music-toggle" id="musicToggle" aria-label="Вкл/выкл музыку">♫</button>
+
+<!-- КОНТЕНТ -->
+<main class="content" id="content">
+
+  <section class="hero">
+    <div class="glass hero__card">
+      <p class="hero__greeting">Приглашаем Вас разделить<br>с нами этот особенный день!</p>
+      <h1 class="hero__names">Дмитрий <span class="hero__amp">&amp;</span> Анжелика</h1>
+      <p class="hero__date">24 ОКТЯБРЯ 2026</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="glass card center reveal">
+        <div class="eyebrow">Дорогие гости!</div>
+        <p class="lead">Мы будем рады разделить с вами этот особенный день. Ваша поддержка и любовь значат для нас очень много. Приглашаем вас присоединиться к нашему празднику любви, радости и счастья. Ждем вас с нетерпением!</p>
+        <div class="divider"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="glass card reveal">
+        <div class="keyinfo">
+          <div class="keyinfo__item">
+            <div class="keyinfo__label">Дата</div>
+            <div class="keyinfo__value">24 октября<br>2026</div>
+          </div>
+          <div class="keyinfo__item">
+            <div class="keyinfo__label">Время</div>
+            <div class="keyinfo__value">16:00</div>
+          </div>
+          <div class="keyinfo__item">
+            <div class="keyinfo__label">Место</div>
+            <div class="keyinfo__value">Ресторан<br>«Павлин»</div>
+          </div>
+        </div>
+        <div class="keyinfo__timer">
+          <div class="timer" id="timer">
+            <div class="timer__cell"><span class="timer__num" id="days">00</span><span class="timer__label">дней</span></div>
+            <div class="timer__cell"><span class="timer__num" id="hours">00</span><span class="timer__label">часов</span></div>
+            <div class="timer__cell"><span class="timer__num" id="minutes">00</span><span class="timer__label">минут</span></div>
+            <div class="timer__cell"><span class="timer__num" id="seconds">00</span><span class="timer__label">секунд</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="glass final__card reveal">
+      <p class="final__text">Будем рады видеть вас<br>на нашем празднике!</p>
+      <p class="final__names">Дмитрий <span class="amp">&amp;</span> Анжелика</p>
+      <div class="final__rose">❦</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  var html = document.documentElement;
+  var envelope = document.getElementById('envelope');
+  var stage = document.getElementById('stage');
+  var video = document.getElementById('videoBloom');
+  var poster = document.getElementById('poster');
+  var content = document.getElementById('content');
+  var musicToggle = document.getElementById('musicToggle');
+
+  var opened = false;
+  var music = null;
+  var muted = false;
+
+  // Выбираем источник по ширине экрана
+  var isMobile = window.matchMedia('(max-width: 767px)').matches;
+  poster.src = isMobile ? 'video/frame-1-mobile.jpg' : 'video/frame-1.jpg';
+  video.src  = isMobile ? 'video/intro-mobile.mp4'  : 'video/intro.mp4';
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.load();
+
+  // ── Открытие конверта ───────────────────────────────────────────
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+
+    startMusic();
+    envelope.classList.add('opened');
+
+    // Запускаем видео
+    var p = video.play();
+    if (p && p.catch) p.catch(function(){});
+    stage.classList.add('show-video');
+
+    // Показываем кнопку музыки
+    musicToggle.classList.add('playing');
+
+    // Убираем конверт после анимации
+    setTimeout(function(){ envelope.classList.add('gone'); }, 1750);
+    setTimeout(function(){ if (envelope.parentNode) envelope.parentNode.removeChild(envelope); }, 2250);
+
+    // Раскрываем текст: за секунду до конца «роспуска» (8 с) или по окончании
+    var revealed = false;
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
+      content.classList.add('in');
+      html.classList.remove('is-locked');
+    }
+    video.addEventListener('timeupdate', function onTime(){
+      if (video.currentTime >= 8) {
+        reveal();
+        video.removeEventListener('timeupdate', onTime);
+      }
+    });
+    video.addEventListener('ended', function(){
+      reveal();
+      stage.classList.add('softened');
+    }, { once: true });
+
+    // Страховка
+    setTimeout(reveal, 15000);
+  }
+
+  envelope.addEventListener('click', openEnvelope);
+
+  // ── Музыка ──────────────────────────────────────────────────────
+  function startMusic(){
+    if (!music) {
+      music = new Audio('audio/svadebnyi-marsh.mp3');
+      music.loop = true;
+      music.volume = 1;
+    }
+    var p = music.play();
+    if (p && p.catch) p.catch(function(err){ console.warn('Music:', err); });
+  }
+
+  musicToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (!music) return;
+    if (muted) {
+      music.play();
+      muted = false;
+      musicToggle.classList.remove('muted');
+    } else {
+      music.pause();
+      muted = true;
+      musicToggle.classList.add('muted');
+    }
+  });
+
+  // ── Таймер ──────────────────────────────────────────────────────
+  var weddingDate = new Date('2026-10-24T16:00:00').getTime();
+  function updateTimer(){
+    var now = Date.now();
+    var distance = weddingDate - now;
+    if (distance < 0) {
+      var t = document.getElementById('timer');
+      if (t) t.innerHTML = '<div style="grid-column:1/-1;text-align:center;font-family:Cormorant Garamond,serif;font-size:1.5rem;color:#a83244;padding:8px;">Свадьба уже состоялась!</div>';
+      return;
+    }
+    var days = Math.floor(distance / 86400000);
+    var hours = Math.floor((distance % 86400000) / 3600000);
+    var minutes = Math.floor((distance % 3600000) / 60000);
+    var seconds = Math.floor((distance % 60000) / 1000);
+    var d = document.getElementById('days');
+    var h = document.getElementById('hours');
+    var m = document.getElementById('minutes');
+    var s = document.getElementById('seconds');
+    if (d) d.textContent = String(days).padStart(2, '0');
+    if (h) h.textContent = String(hours).padStart(2, '0');
+    if (m) m.textContent = String(minutes).padStart(2, '0');
+    if (s) s.textContent = String(seconds).padStart(2, '0');
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+  // ── Появление блоков при скролле ────────────────────────────────
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>
